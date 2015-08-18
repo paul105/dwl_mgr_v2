@@ -11,7 +11,7 @@ headers = {
     "Accept-Language": "pl-PL,pl;q=0.8,en-US;q=0.6,en;q=0.4",
     "Connection": "keep-alive",
 }
-
+#test
 def download_file(myFile):
     if myFile._set_size(myFile._get_size_from_url()) == 0:
             #todo downloading file with 1 part
