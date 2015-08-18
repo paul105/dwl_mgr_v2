@@ -7,22 +7,22 @@ import json
 
 
 def downloader(i, req, dir):               #funkcja dziecko, przekazujemy "id", "Request object", oraz katalog roboczy
-    a=0
-    if not req.has_header("Range"): a=1
+    # a=0
+    # if not req.has_header("Range"): a=1
     data = urllib2.urlopen(req)
     CHUNK = 1024*512                #ilosc danych czytana jednorazowo
     f_path = dir+"\\file"+str(i)
     with open(f_path,"wb") as output:
         while True:
-            __time_start = time.time()
+            # __time_start = time.time()
             chunk = data.read(CHUNK)    #odczytujemy pobrana jednostke danych i zapisujemy, jak wszystko odczytane ->break
-            __time = time.time()-__time_start
+            # __time = time.time()-__time_start
             if not chunk:
-                if a == 1:
-                    del_and_combine(dir+"\\..", dir,str(dir).split(".",1)[1],1)
+                # if a == 1:
+                #     del_and_combine(dir+"\\..", dir,str(dir).split(".",1)[1],1)
                 break
             output.write(chunk)
-            CHUNK = int((CHUNK*0.3)+(len(chunk)/__time)*0.7)
+            # CHUNK = int((CHUNK*0.3)+(len(chunk)/__time)*0.7)
 
 def del_and_combine(dir,dir_tmp,f_name,N):
     file = dir + "\\" + f_name

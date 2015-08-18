@@ -2,6 +2,7 @@
 from PyQt4 import QtGui, QtCore
 from download_window_gui import UI_dl
 import myFile_api
+import supervisor_api
 
 ###window to input download choice class
 class download_choice_window_gui(QtGui.QMainWindow):
@@ -175,12 +176,14 @@ class download_choice_window_gui(QtGui.QMainWindow):
     def download_with_one_url(self):
         NewFile = myFile_api.MyFile()
         NewFile._set_urls(self.check_url(self.get_url1()))
+        NewFile._set_name_from_url()
         NewFile._set_parts(self.get_parts())
         NewFile._set_directory(self._get_directory_to_save())
         if NewFile.validate(self, one_url=True) == True:
             self.download_window_gui_handler = UI_dl(NewFile._get_parts())
             self.download_window_gui_handler.setGeometry(QtCore.QRect(500,500,400,300))
             self.download_window_gui_handler.show()
+            supervisor_api.download_file(NewFile)
             # from super import supervisor1
             # supervisor1(n, url1, self.dir, self.ww, self.tableDwn)
         else:
