@@ -174,16 +174,17 @@ class download_choice_window_gui(QtGui.QMainWindow):
             self.download_with_two_urls()
 
     def download_with_one_url(self):
-        NewFile = myFile_api.MyFile()
-        NewFile._set_urls(self.check_url(self.get_url1()))
-        NewFile._set_name_from_url()
-        NewFile._set_parts(self.get_parts())
-        NewFile._set_directory(self._get_directory_to_save())
-        if NewFile.validate(self, one_url=True) == True:
-            self.download_window_gui_handler = UI_dl(NewFile._get_parts())
+        #NewFile = myFile_api.MyFile()
+        NewFile = supervisor_api.Supervisor_manager_api()
+        NewFile.set_url(self.check_url(self.get_url1()))
+        NewFile.set_name_from_url()
+        NewFile.set_parts(self.get_parts())
+        NewFile.set_directory(self._get_directory_to_save())
+        if NewFile.validate(self) == True:
+            self.download_window_gui_handler = UI_dl(NewFile.get_parts())
             self.download_window_gui_handler.setGeometry(QtCore.QRect(500,500,400,300))
             self.download_window_gui_handler.show()
-            supervisor_api.download_file(NewFile)
+            NewFile.main()
             # from super import supervisor1
             # supervisor1(n, url1, self.dir, self.ww, self.tableDwn)
         else:
@@ -192,11 +193,11 @@ class download_choice_window_gui(QtGui.QMainWindow):
 
     def download_with_two_urls(self):
         NewFile = myFile_api.MyFile()
-        NewFile._set_urls([self.check_url(self.get_url1()), self.check_url(self.get_url2())])
-        NewFile._set_parts(self.get_parts())
-        NewFile._set_directory(self._get_directory_to_save())
+        NewFile.set_url([self.check_url(self.get_url1()), self.check_url(self.get_url2())])
+        NewFile.set_parts(self.get_parts())
+        NewFile.set_directory(self._get_directory_to_save())
         if NewFile.validate(self, one_url=False) == True:
-            self.download_window_gui_handler = UI_dl(NewFile._get_parts())
+            self.download_window_gui_handler = UI_dl(NewFile.get_parts())
             self.download_window_gui_handler.setGeometry(QtCore.QRect(500,500,400,300))
             self.download_window_gui_handler.show()
             # from super import supervisor1
