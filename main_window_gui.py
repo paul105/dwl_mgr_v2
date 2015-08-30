@@ -1,7 +1,7 @@
 #-*- coding: utf-8 -*-
 
 from PyQt4 import QtGui, QtCore
-from download_choice_gui import download_choice_window_gui
+from download_choice_gui import Download_choice_window_gui
 import json
 
 ###application class
@@ -28,11 +28,11 @@ def _set_file_download_list(table):
                 name.setFlags(QtCore.Qt.ItemIsSelectable|QtCore.Qt.ItemIsDragEnabled|QtCore.Qt.ItemIsEnabled)
                 date = QtGui.QTableWidgetItem(file_informations["date"])
                 date.setFlags(QtCore.Qt.ItemIsSelectable|QtCore.Qt.ItemIsDragEnabled|QtCore.Qt.ItemIsEnabled)
-                url = QtGui.QTableWidgetItem(str(file_informations["url"]))
-                url.setFlags(QtCore.Qt.ItemIsSelectable|QtCore.Qt.ItemIsDragEnabled|QtCore.Qt.ItemIsEnabled)
+                # url = QtGui.QTableWidgetItem(str(file_informations["url"]))
+                # url.setFlags(QtCore.Qt.ItemIsSelectable|QtCore.Qt.ItemIsDragEnabled|QtCore.Qt.ItemIsEnabled)
                 table.setItem(i, 0, name)
                 table.setItem(i, 1, date)
-                table.setItem(i, 2, url)
+                # table.setItem(i, 2, url)
     except:
         pass
 
@@ -56,30 +56,66 @@ class MainWindow(QtGui.QMainWindow):
         self.file_download_list.horizontalHeader().setVisible(False)
         self.file_download_list.horizontalHeader().setStretchLastSection(True)
         self.file_download_list.setObjectName("File download list")
-        self.file_download_list.setColumnCount(3)
+        self.file_download_list.setColumnCount(4)
         self.file_download_list.setRowCount(0)
+        self.set_file_download_list()
+
+        # result = QtGui.QMessageBox
+        # result.question(self, 'Usun plik', 'Czy chcesz usunac plik rowniez z dysku?', QtGui.QMessageBox.Yes | QtGui.QMessageBox.No | QtGui.QMessageBox.Cancel, QtGui.QMessageBox.No)
+
 
         ###signals and slots
-        _set_file_download_list(self.file_download_list)
+
         self.connect(self.new_download, QtCore.SIGNAL("clicked()"), self.new_download_choice_gui)
         self.connect(self._delete_from_list, QtCore.SIGNAL("clicked()"), self._delete_row_file_download_list)
 
 
     def _delete_row_file_download_list(self):
         list_current_row = self.file_download_list.currentRow()
+
+
         try:
             with open("files","rb") as download_list_file:
                 _lines_in_list = download_list_file.readlines()
                 del _lines_in_list[list_current_row]
                 with open("files","wb") as download_list_file2:
                     [download_list_file2.write(_lines_in_list[element]) for element in range(0, len(_lines_in_list))]
-            _set_file_download_list(self.file_download_list)
+
+            self.set_file_download_list()
+        except:
+            pass
+
+    def set_file_download_list(self):
+        try:
+            with open("files","rb") as download_list_file:
+                _lines_in_list = download_list_file.readlines()
+                self.file_download_list.setRowCount(len(_lines_in_list))
+                for line in _lines_in_list:
+                    file_informations = json.loads(line)
+                    name = QtGui.QTableWidgetItem(file_informations["name"])
+                    name.setFlags(QtCore.Qt.ItemIsSelectable|QtCore.Qt.ItemIsDragEnabled|QtCore.Qt.ItemIsEnabled)
+                    date = QtGui.QTableWidgetItem(file_informations["date"])
+                    date.setFlags(QtCore.Qt.ItemIsSelectable|QtCore.Qt.ItemIsDragEnabled|QtCore.Qt.ItemIsEnabled)
+                    url1 = str(file_informations["url1"])
+                    try:
+                        url2 = '{}'.format(file_informations["url2"])
+                        url2 = QtGui.QTableWidgetItem(url2)
+                        url2.setFlags(QtCore.Qt.ItemIsSelectable|QtCore.Qt.ItemIsDragEnabled|QtCore.Qt.ItemIsEnabled)
+                    except:
+                        pass
+                    url = QtGui.QTableWidgetItem(url1)
+                    url.setFlags(QtCore.Qt.ItemIsSelectable|QtCore.Qt.ItemIsDragEnabled|QtCore.Qt.ItemIsEnabled)
+                    self.file_download_list.setItem(_lines_in_list.index(line), 0, name)
+                    self.file_download_list.setItem(_lines_in_list.index(line), 1, date)
+                    self.file_download_list.setItem(_lines_in_list.index(line), 2, url)
+                    self.file_download_list.setItem(_lines_in_list.index(line), 3, url2)
+                    self.file_download_list.resizeColumnsToContents()
         except:
             pass
 
 
     def new_download_choice_gui(self):
-        self.new_download_choice_gui_handle = download_choice_window_gui(self.file_download_list)
+        self.new_download_choice_gui_handle = Download_choice_window_gui(self.set_file_download_list())
         self.new_download_choice_gui_handle.setGeometry(QtCore.QRect(100, 100, 600, 400))
         self.new_download_choice_gui_handle.show()
         return self.new_download_choice_gui_handle

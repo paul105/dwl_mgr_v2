@@ -187,12 +187,8 @@ class Supervisor_manager_api(myFile_api.MyFile):
             self.downloader_unknown_size()
         elif self.size !=0 and len(self.url) == 1:
             self.downloader_one_url()
-            print "1 url"
         elif self.size !=0 and len(self.url) == 2:
             self.downloader_two_url(slider_value*0.01)
-            print "2 url"
-        else:
-            print "eeee url"
         ui_dl_handler.set_table_download_parts_info_rows(self.parts)
 
         while True:
@@ -210,7 +206,7 @@ class Supervisor_manager_api(myFile_api.MyFile):
                     ui_dl_handler.table_download_parts_info.setItem(part_number,0,item)
                 self.delete_and_combine_parts()
                 self.fileLogSave()
-                self.set_file_download_list()
+                self._set_file_download_list_handler()
                 ui_dl_handler.finish_button.setEnabled(True)
                 break
 

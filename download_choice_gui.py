@@ -5,10 +5,10 @@ import myFile_api
 import supervisor_api
 
 ###window to input download choice class
-class download_choice_window_gui(QtGui.QMainWindow):
-    def __init__(self,table):
+class Download_choice_window_gui(QtGui.QMainWindow):
+    def __init__(self,set_file_download_list_table):
         QtGui.QMainWindow.__init__(self)
-        self.file_download_list = table
+        self.set_file_download_list_table = set_file_download_list_table
         self.dir = ""
         self.centralWidget = QtGui.QWidget(self)
         self.setWindowTitle("Nowe Pobieranie")
@@ -181,7 +181,7 @@ class download_choice_window_gui(QtGui.QMainWindow):
             self.download_window_gui_handler = UI_dl()
             self.download_window_gui_handler.setGeometry(QtCore.QRect(500,500,400,300))
             self.download_window_gui_handler.show()
-            NewFile.set_file_download_list_handler(self.file_download_list)
+            NewFile._set_file_download_list_handler(self.set_file_download_list_table)
             NewFile.main(ui_dl_handler=self.download_window_gui_handler)
         else:
             pass
@@ -197,7 +197,7 @@ class download_choice_window_gui(QtGui.QMainWindow):
             self.download_window_gui_handler = UI_dl()
             self.download_window_gui_handler.setGeometry(QtCore.QRect(500,500,400,300))
             self.download_window_gui_handler.show()
-            NewFile.set_file_download_list_handler(self.file_download_list)
+            NewFile._set_file_download_list_handler(self.set_file_download_list_table)
             NewFile.main(ui_dl_handler=self.download_window_gui_handler, slider_value=int(self.proportion_slider.value()))
 
 

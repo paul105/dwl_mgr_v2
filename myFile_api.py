@@ -61,9 +61,9 @@ class MyFile(object):
         self.parts = parts
         return self.parts
 
-    def set_file_download_list_handler(self,file_download_list_handler):
-        self.file_download_list_handler= file_download_list_handler
-        return self.file_download_list_handler
+    def set_file_download_list_handler(self,set_file_download_list_handler):
+        self._set_file_download_list_handler= set_file_download_list_handler
+        return self._set_file_download_list_handler
 
 
     def validate(self, download_choice_window_handler):
@@ -184,24 +184,3 @@ class MyFile(object):
                                             'url2' : str(self.url[1]), 'date':time.strftime('%c')},
                                            separators=(',',':'))
             file_log.write('{data}\n'.format(data=data_to_write))
-
-
-    def set_file_download_list(self):
-        try:
-            with open("files","rb") as download_list_file:
-                lines_in_list = download_list_file.readlines()
-                self.file_download_list_handler.setRowCount(len(lines_in_list))
-                for line in range(0,len(lines_in_list)):
-                    file_informations = json.loads(lines_in_list[line])
-                    name = QtGui.QTableWidgetItem(file_informations["name"])
-                    name.setFlags(QtCore.Qt.ItemIsSelectable|QtCore.Qt.ItemIsDragEnabled|QtCore.Qt.ItemIsEnabled)
-                    date = QtGui.QTableWidgetItem(file_informations["date"])
-                    date.setFlags(QtCore.Qt.ItemIsSelectable|QtCore.Qt.ItemIsDragEnabled|QtCore.Qt.ItemIsEnabled)
-                    # url = QtGui.QTableWidgetItem(str(file_informations["url"]))
-                    # url.setFlags(QtCore.Qt.ItemIsSelectable|QtCore.Qt.ItemIsDragEnabled|QtCore.Qt.ItemIsEnabled)
-                    self.file_download_list_handler.setItem(line, 0, name)
-                    self.file_download_list_handler.setItem(line, 1, date)
-                    # table.setItem(i, 2, url)
-        except:
-            pass
-
