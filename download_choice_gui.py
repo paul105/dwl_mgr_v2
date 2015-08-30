@@ -172,35 +172,34 @@ class download_choice_window_gui(QtGui.QMainWindow):
             self.download_with_two_urls()
 
     def download_with_one_url(self):
-        #NewFile = myFile_api.MyFile()
         NewFile = supervisor_api.Supervisor_manager_api()
         NewFile.set_url(self.check_url(self.get_url1()))
         NewFile.set_name_from_url()
         NewFile.set_parts(self.get_parts())
         NewFile.set_directory(self._get_directory_to_save())
-        if NewFile.validate(self) == True:
+        if NewFile.validate(download_choice_window_handler=self) == True:
             self.download_window_gui_handler = UI_dl()
             self.download_window_gui_handler.setGeometry(QtCore.QRect(500,500,400,300))
             self.download_window_gui_handler.show()
             NewFile.set_file_download_list_handler(self.file_download_list)
-            NewFile.main(self.download_window_gui_handler)
-            # from super import supervisor1
-            # supervisor1(n, url1, self.dir, self.ww, self.tableDwn)
+            NewFile.main(ui_dl_handler=self.download_window_gui_handler)
         else:
             pass
 
 
     def download_with_two_urls(self):
-        NewFile = myFile_api.MyFile()
+        NewFile = supervisor_api.Supervisor_manager_api()
         NewFile.set_url([self.check_url(self.get_url1()), self.check_url(self.get_url2())])
+        NewFile.set_name_from_url()
         NewFile.set_parts(self.get_parts())
         NewFile.set_directory(self._get_directory_to_save())
-        if NewFile.validate(self, one_url=False) == True:
-            self.download_window_gui_handler = UI_dl(NewFile.get_parts())
+        if NewFile.validate(download_choice_window_handler=self) == True:
+            self.download_window_gui_handler = UI_dl()
             self.download_window_gui_handler.setGeometry(QtCore.QRect(500,500,400,300))
             self.download_window_gui_handler.show()
+            NewFile.set_file_download_list_handler(self.file_download_list)
+            NewFile.main(ui_dl_handler=self.download_window_gui_handler, slider_value=int(self.proportion_slider.value()))
 
-            # from super import supervisor1
-            # supervisor1(n, url1, self.dir, self.ww, self.tableDwn)
+
         else:
             pass

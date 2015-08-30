@@ -27,7 +27,10 @@ def downloader(child_number, request_object, temporary_directory, manager_dictio
             manager_dictionary[child_number]['data'] = CHUNK
             manager_dictionary[child_number]['time'] = _time
             # print 'Child {}, CHUNK = {}, time = {}'.format(child_number, CHUNK, _time)
-            CHUNK = int((CHUNK*0.3)+(len(chunk)/_time)*0.7)
+            try:
+                CHUNK = int((CHUNK*0.3)+(len(chunk)/_time)*0.7)
+            except:
+                pass
 
 
 

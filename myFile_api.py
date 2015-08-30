@@ -19,12 +19,8 @@ class MyFile(object):
 
     def set_name_from_url(self):
         try:
-            if isinstance(self.url, str):
-                self.name = self.url.split("/")[len(self.url.split("/")) - 1]
-                return self.name
-            elif isinstance(self.url, list):
-                self.name = self.url[0].split("/")[len(self.url[0].split("/")) - 1]
-                return self.name
+            self.name = self.url[0].split("/")[len(self.url[0].split("/")) - 1]
+            return self.name
         except:
             pass
 
@@ -79,6 +75,9 @@ class MyFile(object):
             if self.url[0] == '' or self.url[1] == '':
                 QtGui.QMessageBox.about(download_choice_window_handler,"Error!","Nie wpisano adresu lub adres jest niepoprawny (serwer docelowy nie odpowiada)")
                 return False
+            if not self.compare_file_sizes():
+                QtGui.QMessageBox.about(download_choice_window_handler,"Error!","Pliki na podanych serwerach nie sa identyczne.")
+                return False
 
         if self.directory == '':
             QtGui.QMessageBox.about(download_choice_window_handler,"Error!","Nie wybrano katalogu lub katalog nie istnieje")
@@ -90,7 +89,25 @@ class MyFile(object):
         return True
 
     def compare_file_sizes(self):
-        pass #TODO
+        size1 = None
+        size2 = None
+        try:
+            file_data = urllib2.urlopen(self.url[0])
+            if file_data.headers['Accept-Ranges'] == 'bytes':
+                if file_data.headers['Content-Length']:
+                    size1 = file_data.headers['Content-Length']
+            file_data = urllib2.urlopen(self.url[1])
+            if file_data.headers['Accept-Ranges'] == 'bytes':
+                if file_data.headers['Content-Length']:
+                    size2 = file_data.headers['Content-Length']
+            if size1 == size2:
+                return True
+            else:
+                return False
+        except:
+            return False
+
+
 
     def get_size_from_url(self):
         size = 0
