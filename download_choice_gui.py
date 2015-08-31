@@ -6,9 +6,9 @@ import supervisor_api
 
 ###window to input download choice class
 class Download_choice_window_gui(QtGui.QMainWindow):
-    def __init__(self,set_file_download_list_table):
+    def __init__(self, file_download_list):
         QtGui.QMainWindow.__init__(self)
-        self.set_file_download_list_table = set_file_download_list_table
+        self.file_download_list = file_download_list
         self.dir = ""
         self.centralWidget = QtGui.QWidget(self)
         self.setWindowTitle("Nowe Pobieranie")
@@ -181,8 +181,8 @@ class Download_choice_window_gui(QtGui.QMainWindow):
             self.download_window_gui_handler = UI_dl()
             self.download_window_gui_handler.setGeometry(QtCore.QRect(500,500,400,300))
             self.download_window_gui_handler.show()
-            NewFile._set_file_download_list_handler(self.set_file_download_list_table)
-            NewFile.main(ui_dl_handler=self.download_window_gui_handler)
+            # NewFile._set_file_download_list_handler(self.set_file_download_list_table)
+            NewFile.main()
         else:
             pass
 
@@ -193,12 +193,15 @@ class Download_choice_window_gui(QtGui.QMainWindow):
         NewFile.set_name_from_url()
         NewFile.set_parts(self.get_parts())
         NewFile.set_directory(self._get_directory_to_save())
+        NewFile.set_slider_value(int(self.proportion_slider.value()))
         if NewFile.validate(download_choice_window_handler=self) == True:
             self.download_window_gui_handler = UI_dl()
             self.download_window_gui_handler.setGeometry(QtCore.QRect(500,500,400,300))
             self.download_window_gui_handler.show()
-            NewFile._set_file_download_list_handler(self.set_file_download_list_table)
-            NewFile.main(ui_dl_handler=self.download_window_gui_handler, slider_value=int(self.proportion_slider.value()))
+            # NewFile._set_file_download_list_handler(self.set_file_download_list_table)
+            NewFile.set_file_download_list(self.file_download_list)
+            NewFile.set_download_window_gui_handler(self.download_window_gui_handler)
+            NewFile.main()
 
 
         else:

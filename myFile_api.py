@@ -61,10 +61,17 @@ class MyFile(object):
         self.parts = parts
         return self.parts
 
-    def set_file_download_list_handler(self,set_file_download_list_handler):
-        self._set_file_download_list_handler= set_file_download_list_handler
-        return self._set_file_download_list_handler
+    def set_slider_value(self,slider_value):
+        self.slider_value = slider_value
+        return self.slider_value
 
+    def set_file_download_list(self,file_download_list):
+        self.file_download_list = file_download_list
+        return self.file_download_list
+
+    def set_download_window_gui_handler(self, download_window_gui_handler):
+        self.download_window_gui_handler = download_window_gui_handler
+        return self.download_window_gui_handler
 
     def validate(self, download_choice_window_handler):
         if len(self.url) == 1:

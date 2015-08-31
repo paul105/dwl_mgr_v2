@@ -16,23 +16,32 @@ class App(QtGui.QApplication):
         self.exit(0)
 
 
-def _set_file_download_list(table):
+def set_file_download_list(file_download_list):
     try:
         with open("files","rb") as download_list_file:
             _lines_in_list = download_list_file.readlines()
-            table.setRowCount(len(_lines_in_list))
-            for i in range(0,len(_lines_in_list)):
-                file_informations = json.loads(_lines_in_list[i])
-
+            file_download_list.setRowCount(len(_lines_in_list))
+            for line in _lines_in_list:
+                file_informations = json.loads(line)
                 name = QtGui.QTableWidgetItem(file_informations["name"])
                 name.setFlags(QtCore.Qt.ItemIsSelectable|QtCore.Qt.ItemIsDragEnabled|QtCore.Qt.ItemIsEnabled)
                 date = QtGui.QTableWidgetItem(file_informations["date"])
                 date.setFlags(QtCore.Qt.ItemIsSelectable|QtCore.Qt.ItemIsDragEnabled|QtCore.Qt.ItemIsEnabled)
-                # url = QtGui.QTableWidgetItem(str(file_informations["url"]))
-                # url.setFlags(QtCore.Qt.ItemIsSelectable|QtCore.Qt.ItemIsDragEnabled|QtCore.Qt.ItemIsEnabled)
-                table.setItem(i, 0, name)
-                table.setItem(i, 1, date)
-                # table.setItem(i, 2, url)
+                url1 = str(file_informations["url1"])
+                try:
+                    url2 = '{}'.format(file_informations["url2"])
+                except:
+                    url2 = ''
+                finally:
+                    url2 = QtGui.QTableWidgetItem(url2)
+                    url2.setFlags(QtCore.Qt.ItemIsSelectable|QtCore.Qt.ItemIsDragEnabled|QtCore.Qt.ItemIsEnabled)
+                url = QtGui.QTableWidgetItem(url1)
+                url.setFlags(QtCore.Qt.ItemIsSelectable|QtCore.Qt.ItemIsDragEnabled|QtCore.Qt.ItemIsEnabled)
+                file_download_list.setItem(_lines_in_list.index(line), 0, name)
+                file_download_list.setItem(_lines_in_list.index(line), 1, date)
+                file_download_list.setItem(_lines_in_list.index(line), 2, url)
+                file_download_list.setItem(_lines_in_list.index(line), 3, url2)
+                file_download_list.resizeColumnsToContents()
     except:
         pass
 
@@ -58,7 +67,7 @@ class MainWindow(QtGui.QMainWindow):
         self.file_download_list.setObjectName("File download list")
         self.file_download_list.setColumnCount(4)
         self.file_download_list.setRowCount(0)
-        self.set_file_download_list()
+        set_file_download_list(self.file_download_list)
 
         # result = QtGui.QMessageBox
         # result.question(self, 'Usun plik', 'Czy chcesz usunac plik rowniez z dysku?', QtGui.QMessageBox.Yes | QtGui.QMessageBox.No | QtGui.QMessageBox.Cancel, QtGui.QMessageBox.No)
@@ -99,10 +108,11 @@ class MainWindow(QtGui.QMainWindow):
                     url1 = str(file_informations["url1"])
                     try:
                         url2 = '{}'.format(file_informations["url2"])
+                    except:
+                        url2 = ''
+                    finally:
                         url2 = QtGui.QTableWidgetItem(url2)
                         url2.setFlags(QtCore.Qt.ItemIsSelectable|QtCore.Qt.ItemIsDragEnabled|QtCore.Qt.ItemIsEnabled)
-                    except:
-                        pass
                     url = QtGui.QTableWidgetItem(url1)
                     url.setFlags(QtCore.Qt.ItemIsSelectable|QtCore.Qt.ItemIsDragEnabled|QtCore.Qt.ItemIsEnabled)
                     self.file_download_list.setItem(_lines_in_list.index(line), 0, name)
@@ -115,7 +125,7 @@ class MainWindow(QtGui.QMainWindow):
 
 
     def new_download_choice_gui(self):
-        self.new_download_choice_gui_handle = Download_choice_window_gui(self.set_file_download_list())
+        self.new_download_choice_gui_handle = Download_choice_window_gui(self.file_download_list)
         self.new_download_choice_gui_handle.setGeometry(QtCore.QRect(100, 100, 600, 400))
         self.new_download_choice_gui_handle.show()
         return self.new_download_choice_gui_handle

@@ -4,7 +4,6 @@ import myFile_api
 import downloader_file_manager
 from multiprocessing import Manager, Process, Pool
 import urllib2
-from download_window_gui import UI_dl
 from PyQt4 import QtGui, QtCore
 import os
 from threading import Thread
@@ -45,11 +44,7 @@ class Supervisor_manager_api(myFile_api.MyFile):
         self.prepare_temporary_files()
         self.threads_pool = []
         size1 = int(int(self.size)*slider_value)
-        print slider_value
-        print size1
         size2 = int(self.size)-int(size1)
-        print size2
-        print size1+size2
         checker = float(self.parts)*slider_value
         checker_int = None
         if 0.5 > checker > 0:
@@ -75,13 +70,9 @@ class Supervisor_manager_api(myFile_api.MyFile):
             self.threads_pool = self._start_new_threads(request_object_list)  ###todo cos
 
             self.set_parts(int(parts)-checker_int)
-            print "parts = ", self.parts
             self.set_size(size2)
-            print "size2 = ", self.size
             self.set_data_block()
-            print "data_block2 = ", self.data_block
             self.set_parts(parts)
-            print "parts later = ", self.parts
             request_object_list += self._set_request_object(begin=checker_int, url=False, size1=size1)
             self.threads_pool += self._start_new_threads(request_object_list, begin=checker_int)
             self.set_size(size1+size2)
@@ -112,7 +103,6 @@ class Supervisor_manager_api(myFile_api.MyFile):
                 stop = start + int(self.data_block) -1
             else:
                 stop = int(self.size) + size1
-            print "process number = {}, start = {}, stop = {}, part_size = {}".format(download_process_number, start, stop, stop-start)
             self.manager_dictionary[download_process_number]['part_size'] = int(stop-start)
             headers['Range'] = "bytes={}-{}".format(str(start),str(stop))
             request_object_list.append(urllib2.Request(url, headers=headers))
@@ -160,8 +150,6 @@ class Supervisor_manager_api(myFile_api.MyFile):
                 text = ('{:.2f}/{:.2f} ({:2.2f}%)   {:.2f} MB/s'.format(
                     actual_part_size/divider, float(self.manager_dictionary[part_number]['part_size'])/divider,
                     (actual_part_size*100)/float(self.manager_dictionary[part_number]['part_size']), speed/divider))
-            else:
-                text = "ala ma kota"
         except:
             pass
         finally:
@@ -177,7 +165,7 @@ class Supervisor_manager_api(myFile_api.MyFile):
                 'part_size' : None
             }
 
-    def main(self, ui_dl_handler, slider_value=None):
+    def main(self):
         self.set_size(self.get_size_from_url())
         man = Manager()
         self.manager_dictionary = man.dict()
@@ -188,8 +176,8 @@ class Supervisor_manager_api(myFile_api.MyFile):
         elif self.size !=0 and len(self.url) == 1:
             self.downloader_one_url()
         elif self.size !=0 and len(self.url) == 2:
-            self.downloader_two_url(slider_value*0.01)
-        ui_dl_handler.set_table_download_parts_info_rows(self.parts)
+            self.downloader_two_url(self.slider_value*0.01)
+        self.download_window_gui_handler.set_table_download_parts_info_rows(self.parts)
 
         while True:
             QtCore.QCoreApplication.processEvents()
@@ -203,11 +191,13 @@ class Supervisor_manager_api(myFile_api.MyFile):
                     item = QtGui.QTableWidgetItem()
                     item.setText(text)
                     item.setFlags(QtCore.Qt.ItemIsSelectable|QtCore.Qt.ItemIsDragEnabled|QtCore.Qt.ItemIsEnabled)
-                    ui_dl_handler.table_download_parts_info.setItem(part_number,0,item)
+                    self.download_window_gui_handler.table_download_parts_info.setItem(part_number,0,item)
                 self.delete_and_combine_parts()
                 self.fileLogSave()
-                self._set_file_download_list_handler()
-                ui_dl_handler.finish_button.setEnabled(True)
+                # self.file_download_list_handler()
+                from main_window_gui import set_file_download_list
+                set_file_download_list(self.file_download_list)
+                self.download_window_gui_handler.finish_button.setEnabled(True)
                 break
 
             for part_number in range(self.parts):
@@ -215,7 +205,7 @@ class Supervisor_manager_api(myFile_api.MyFile):
                 item = QtGui.QTableWidgetItem()
                 item.setText(text)
                 item.setFlags(QtCore.Qt.ItemIsSelectable|QtCore.Qt.ItemIsDragEnabled|QtCore.Qt.ItemIsEnabled)
-                ui_dl_handler.table_download_parts_info.setItem(part_number,0,item)
+                self.download_window_gui_handler.table_download_parts_info.setItem(part_number,0,item)
 
 
 
