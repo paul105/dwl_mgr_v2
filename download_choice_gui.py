@@ -1,7 +1,13 @@
-#-*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
+"""
+:created on: '31/08/15'
+:copyright: Paweł Nogieć
+:author: Paweł Nogieć
+:contact: nogiec.pawel@gmail.com
+"""
+
 from PyQt4 import QtGui, QtCore
 from download_window_gui import UI_dl
-import myFile_api
 import supervisor_api
 
 ###window to input download choice class

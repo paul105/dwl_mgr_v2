@@ -1,4 +1,11 @@
-#-*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
+"""
+:created on: '31/08/15'
+:copyright: Paweł Nogieć
+:author: Paweł Nogieć
+:contact: nogiec.pawel@gmail.com
+"""
+
 from PyQt4 import QtGui, QtCore
 import urllib2
 import os
