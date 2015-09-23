@@ -64,6 +64,7 @@ class MainWindow(QtGui.QMainWindow):
         self.connect(self.new_download, QtCore.SIGNAL("clicked()"), self.new_download_choice_gui)
         self.connect(self._delete_from_list, QtCore.SIGNAL("clicked()"), self._delete_row_file_download_list)
 
+
     def _delete_row_file_download_list(self):
         list_current_row = self.file_download_list.currentRow()
         try:
@@ -75,9 +76,6 @@ class MainWindow(QtGui.QMainWindow):
             _set_file_download_list(self.file_download_list)
         except:
             pass
-
-    def cos(self):
-        pass
 
 
     def new_download_choice_gui(self):

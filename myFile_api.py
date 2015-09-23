@@ -8,21 +8,7 @@ import json
 
 class MyFile(object):
     def __init__(self,name=None, urls=None, parts=None, directory=None, size=None):
-#        self.temporary_directory = '{directory}\\TMP.{file_name}'.format(directory=self.directory, file_name= self.name)
         pass
-        # self.name = name
-        # try:
-        #     if isinstance(urls,str):
-        #         self.url = urls
-        #     elif isinstance(urls,list):
-        #         self.url1 = urls[0]
-        #         self.url2 = urls[1]
-        # except:
-        #     raise "Wrong format of url"
-        # self.parts = parts
-        # self.directory = directory
-        # if not size == None:
-        #     self.size = size
 
     def get_name(self):
         return self.name
@@ -58,10 +44,6 @@ class MyFile(object):
 
     def get_url(self):
         return self.url
-        # try:
-        #     return self.url
-        # except:
-        #     return self.url1, self.url2
 
     def set_url(self, url):
         try:
@@ -82,6 +64,11 @@ class MyFile(object):
     def set_parts(self, parts):
         self.parts = parts
         return self.parts
+
+    def set_file_download_list_handler(self,file_download_list_handler):
+        self.file_download_list_handler= file_download_list_handler
+        return self.file_download_list_handler
+
 
     def validate(self, download_choice_window_handler):
         if len(self.url) == 1:
@@ -134,14 +121,16 @@ class MyFile(object):
         return self.data_block
 
     def delete_and_combine_parts(self):
-        i=1
-        while True:
-            if os.path.exists(os.path.join(self.directory,self.name)):
-                self.set_name('copy[{number}]_{file_name}'.format(number=str(i),
-                                                                  file_name=self.name))
-                i += 1
-            else:
-                break
+        i = 1
+        if os.path.exists(os.path.join(self.directory,self.name)):
+            while True:
+                tmp_name = 'copy[{number}]_{file_name}'.format(number=str(i),
+                                                           file_name=self.name)
+                if os.path.exists(os.path.join(self.directory,tmp_name)):
+                    i += 1
+                else:
+                    self.set_name(tmp_name)
+                    break
         file_name = os.path.join(self.directory,self.name)
         with open(file_name, "wb") as downloaded_file:
             for i in range(0, self.parts):
@@ -180,4 +169,22 @@ class MyFile(object):
             file_log.write('{data}\n'.format(data=data_to_write))
 
 
+    def set_file_download_list(self):
+        try:
+            with open("files","rb") as download_list_file:
+                lines_in_list = download_list_file.readlines()
+                self.file_download_list_handler.setRowCount(len(lines_in_list))
+                for line in range(0,len(lines_in_list)):
+                    file_informations = json.loads(lines_in_list[line])
+                    name = QtGui.QTableWidgetItem(file_informations["name"])
+                    name.setFlags(QtCore.Qt.ItemIsSelectable|QtCore.Qt.ItemIsDragEnabled|QtCore.Qt.ItemIsEnabled)
+                    date = QtGui.QTableWidgetItem(file_informations["date"])
+                    date.setFlags(QtCore.Qt.ItemIsSelectable|QtCore.Qt.ItemIsDragEnabled|QtCore.Qt.ItemIsEnabled)
+                    # url = QtGui.QTableWidgetItem(str(file_informations["url"]))
+                    # url.setFlags(QtCore.Qt.ItemIsSelectable|QtCore.Qt.ItemIsDragEnabled|QtCore.Qt.ItemIsEnabled)
+                    self.file_download_list_handler.setItem(line, 0, name)
+                    self.file_download_list_handler.setItem(line, 1, date)
+                    # table.setItem(i, 2, url)
+        except:
+            pass
 

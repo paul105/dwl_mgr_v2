@@ -3,28 +3,31 @@ from PyQt4 import QtGui, QtCore
 
 ####okno pobierania
 class UI_dl(QtGui.QMainWindow):
-    def __init__(self,n):
+    def __init__(self):
         QtGui.QMainWindow.__init__(self)
-        self.cw3 = QtGui.QWidget(self)
-        self.setCentralWidget(self.cw3)
+        self.centralWidget = QtGui.QWidget(self)
+        self.setCentralWidget(self.centralWidget)
         self.setWindowTitle("Pobieranie pliku...")
-        self.end = QtGui.QPushButton("Zakoncz", self.cw3)
-        self.end.setGeometry(QtCore.QRect(250,250,100,30))
-        self.end.setEnabled(False)
-        self.connect(self.end, QtCore.SIGNAL("clicked()"), self.close)
-        self.tableParts = QtGui.QTableWidget(self.cw3)
-        self.tableParts.setGeometry(QtCore.QRect(10, 10, 300, 200))
-        self.tableParts.horizontalHeader().setVisible(False)
-        self.tableParts.horizontalHeader().setStretchLastSection(True)
-        self.tableParts.setObjectName("tableParts")
-        self.tableParts.setColumnCount(1)
 
+        self.finish_button = QtGui.QPushButton("Zakoncz", self.centralWidget)
+        self.finish_button.setGeometry(QtCore.QRect(250,250,100,30))
+        self.finish_button.setEnabled(False)
 
+        self.table_download_parts_info = QtGui.QTableWidget(self.centralWidget)
+        self.table_download_parts_info.setGeometry(QtCore.QRect(10, 10, 300, 200))
+        self.table_download_parts_info.horizontalHeader().setVisible(False)
+        self.table_download_parts_info.horizontalHeader().setStretchLastSection(True)
+        self.table_download_parts_info.setObjectName("tableParts")
+        self.table_download_parts_info.setColumnCount(1)
 
-def setTableParts(table,n):
-    table.setRowCount(n)
-    for i in range(0,n):
-        item = QtGui.QTableWidgetItem()
-        item.setFlags(QtCore.Qt.ItemIsSelectable|QtCore.Qt.ItemIsDragEnabled|QtCore.Qt.ItemIsEnabled)
-        table.setItem(i, 0, item)
+        self.connect(self.finish_button, QtCore.SIGNAL("clicked()"), self.finish_button_click)
 
+    def set_table_download_parts_info_rows(self,row_count):
+        self.table_download_parts_info.setRowCount(row_count)
+        for row in range(0,row_count):
+            item = QtGui.QTableWidgetItem()
+            item.setFlags(QtCore.Qt.ItemIsSelectable|QtCore.Qt.ItemIsDragEnabled|QtCore.Qt.ItemIsEnabled)
+            self.table_download_parts_info.setItem(row, 0, item)
+
+    def finish_button_click(self):
+        self.close()

@@ -8,7 +8,6 @@ import supervisor_api
 class download_choice_window_gui(QtGui.QMainWindow):
     def __init__(self,table):
         QtGui.QMainWindow.__init__(self)
-
         self.file_download_list = table
         self.dir = ""
         self.centralWidget = QtGui.QWidget(self)
@@ -61,7 +60,6 @@ class download_choice_window_gui(QtGui.QMainWindow):
         self.connect(self.urlBox, QtCore.SIGNAL("clicked()"), self.change_urlBox_check_status)
         self.connect(self.proportion_slider, QtCore.SIGNAL("valueChanged(int)"), self._get_value_from_slider_and_set_value_box)
         self.connect(self.proportion_value, QtCore.SIGNAL("textEdited(QString)"), self._get_value_from_box_and_set_slider)
-
 
     def _get_value_from_box_and_set_slider(self):
         x = self.proportion_value.text()
@@ -181,10 +179,11 @@ class download_choice_window_gui(QtGui.QMainWindow):
         NewFile.set_parts(self.get_parts())
         NewFile.set_directory(self._get_directory_to_save())
         if NewFile.validate(self) == True:
-            self.download_window_gui_handler = UI_dl(NewFile.get_parts())
+            self.download_window_gui_handler = UI_dl()
             self.download_window_gui_handler.setGeometry(QtCore.QRect(500,500,400,300))
             self.download_window_gui_handler.show()
-            NewFile.main()
+            NewFile.set_file_download_list_handler(self.file_download_list)
+            NewFile.main(self.download_window_gui_handler)
             # from super import supervisor1
             # supervisor1(n, url1, self.dir, self.ww, self.tableDwn)
         else:
@@ -200,6 +199,7 @@ class download_choice_window_gui(QtGui.QMainWindow):
             self.download_window_gui_handler = UI_dl(NewFile.get_parts())
             self.download_window_gui_handler.setGeometry(QtCore.QRect(500,500,400,300))
             self.download_window_gui_handler.show()
+
             # from super import supervisor1
             # supervisor1(n, url1, self.dir, self.ww, self.tableDwn)
         else:
